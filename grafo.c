@@ -3,182 +3,201 @@
 #include <limits.h>
 #include "grafo.h"
 
+
 Grafo *alocarGrafo(int qtd_cidades)
 {
-    Grafo *dados;
-
-    dados = (Grafo *)malloc(sizeof(Grafo));
-
-    dados->qtd_cidades = qtd_cidades;
-
-    // Aloca a matriz de adjacencias que representa as cidades e as distancias entre elas
-    dados->adj = (int **)malloc(sizeof(int *) * qtd_cidades * qtd_cidades);
-    for (int i = 0; i < qtd_cidades * qtd_cidades; i++)
-    {
-        dados->adj[i] = (int *)malloc(sizeof(int) * 3);
+    Grafo *gp = malloc(sizeof(Grafo));
+    gp->numCidades = qtd_cidades;
+    gp->cabeca = malloc(qtd_cidades * sizeof(Celula*)); //Aloca um vetor de ponteiros para listas encadeadas
+    gp->ultimo = malloc(qtd_cidades * sizeof(Celula*)); //Aloca um vetor de ponteiros para os últimos elementos das listas encadeadas
+    for(int i = 0; i < qtd_cidades; i++){
+        gp->cabeca[i] = malloc(sizeof(Celula)); // aloca memória para uma única celula, que será a cabeça da lista propriamente dita
+        gp->ultimo[i] = gp->cabeca[i]; // o ponteiro de último aponta para o mesmo endereço que o ponteiro da cabeça (não há elementos na lista ainda)
+        gp->cabeca[i]->tam = 0; // inicia o tamanho da lista como zero
+        gp->cabeca[i]->prox = NULL; // o próximo da celula cabeça é NULL
+        gp->cabeca[i]->item = NULL; // Não há itens
+        //O objetivo de inicializar a cabeça é armazenar o tamanho das listas
+        //As demais células terão o campo tam, mas esse não será utilzado
     }
-
-    // Aloca o vetor que registra as cidades ja visitadas
-    dados->visitadas = (int *)calloc(qtd_cidades, sizeof(int));
-
-    // Aloca os vetores que armazenam todos os caminhos e o melhor caminho
-    dados->novoCaminho = (int *)malloc(sizeof(int) * (qtd_cidades + 1));
-    dados->melhorCaminho = (int *)malloc(sizeof(int) * (qtd_cidades + 1));
-
-    // Aloca a matriz que contem apenas as distancias entre as cidades
-    dados->distancias = (int **)malloc(sizeof(int *) * qtd_cidades);
-    for (int i = 0; i < qtd_cidades; i++)
-    {
-        dados->distancias[i] = (int *)malloc(sizeof(int) * qtd_cidades);
-    }
-
-    int linhas = 1;
-
-    for (int i = 1; i < qtd_cidades; i++)
-    {
-        linhas *= i;
-    }
-
-    return dados;
+    
+    return gp;
 }
+
+bool ListaInsereFinal(Grafo *gp, Item x, int pos) {
+    Celula* nova = malloc(sizeof(Celula));
+    nova->item = malloc(sizeof(Item)); 
+    if (nova == NULL)
+        return false;
+    *(nova->item) = x;
+    nova->prox = NULL;
+    if (gp->ultimo[pos] != NULL)
+        gp->ultimo[pos]->prox = nova;
+    else
+        gp->cabeca[pos] = nova;
+    gp->ultimo[pos] = nova;
+    (*gp->cabeca[pos]).tam++;
+    return true;
+}
+
+
 
 void desalocarGrafo(Grafo **dados)
 {
-    // Desaloca a matriz de adjacencias
-    for (int i = 0; i < (*dados)->qtd_cidades * (*dados)->qtd_cidades; i++)
-    {
-        free((*dados)->adj[i]);
+    for(int i = 0; i < (*dados)->numCidades; i++){
+            ListaDestroi(&((*dados)->cabeca[i]));;
     }
-    free((*dados)->adj);
-
-    // Desaloca o vetor de cidades visitadas
-    free((*dados)->visitadas);
-
-    // Desaloca a matriz de distancias
-    for (int i = 0; i < (*dados)->qtd_cidades; i++)
-    {
-        free((*dados)->distancias[i]);
-    }
-    free((*dados)->distancias);
-
-    // Desaloca os vetores de caminhos
-    free((*dados)->novoCaminho);
-    free((*dados)->melhorCaminho);
-
-    // Desaloca a estrutura principal
+    free((*dados)->cabeca);
+    free((*dados)->ultimo);
     free(*dados);
-
     *dados = NULL;
+
+}
+
+void ListaDestroi(Celula** celula) {
+    Celula* aux = *celula, *aux1;
+    while (aux != NULL) {
+        aux1 = aux->prox;
+        if (aux->item != NULL) {
+            free(aux->item);
+        }
+        free(aux);
+        aux = aux1;
+    }
+    *celula = NULL;
 }
 
 void leGrafo(Grafo **dados)
 {
-    // Le as cidades e as respectivas distancias
-    for (int i = 0; i < (*dados)->qtd_cidades * (*dados)->qtd_cidades; i++)
-    {
-        for (int j = 0; j < 3; j++)
-        {
-            scanf("%d", &(*dados)->adj[i][j]);
+    int origem;
+    Item aux;
+    for(int i = 0; i < (*dados)->numCidades; i++){
+        for(int j = 0; j < (*dados)->numCidades; j++){
+            scanf("%d%d%d", &origem, &aux.cidade, &aux.distancia);
+            ListaInsereFinal(*dados, aux, origem);
+            
         }
     }
+}
 
-    int a = 0;
 
-    // Reorganiza as adjacencias numa nova matriz para facilitar o acesso aos valores
-    for (int i = 0; i < (*dados)->qtd_cidades; i++)
-    {
-        for (int j = 0; j < (*dados)->qtd_cidades; j++)
-        {
-            (*dados)->distancias[i][j] = (*dados)->adj[a][2];
-            a++;
-        }
+bool ListaGet(Grafo *gp, int pos, int p, Item *pX) {
+    if (p >= ListaTamanho(gp, pos) || p < 0 )
+        return false;
+    Celula* aux = gp->cabeca[pos];
+    for (int i=0;i<p;i++)
+        aux = aux->prox;
+    if (aux->item != NULL){
+        (*pX) = *(aux->item);
     }
     
-   /* for(int i = 0; i < (*dados)->qtd_cidades * (*dados)->qtd_cidades; i++){
-        for(int j = 0; j < 3; j++){
-            printf("%d ", (*dados)->adj[i][j]);
-        }
-        printf("\n");
-    }
-    printf("\n\n");
-    for(int i = 0; i < (*dados)->qtd_cidades; i++){
-        for(int j = 0; j < (*dados)->qtd_cidades; j++){
-            printf("%d ", (*dados)->distancias[i][j]);
-        }
-        printf("\n");
-    }*/
+    return true;
 }
 
-void encontraCaminho(Grafo *dados, int *visitadas, int passos, int cidadeAtual)
+
+void imprimeGrafo(Grafo *dados)
 {
-    static int melhorDistancia = INT_MAX;
-    int distanciaTemp;
-    dados->novoCaminho[passos] = cidadeAtual;
-    passos++;
-
-    if (passos == dados->qtd_cidades)
-    {   
-        // Calcula a distancia total do caminho atual
-        distanciaTemp = calculaCaminho(dados->qtd_cidades, *dados);
-        
-        if (distanciaTemp < melhorDistancia)
-        {
-            melhorDistancia = distanciaTemp;
-            dados->melhorPeso = melhorDistancia;
-
-            //Armazena o melhor caminho encontrado ate o momento
-            for (int i = 0; i < dados->qtd_cidades; i++)
-            {
-                dados->melhorCaminho[i] = dados->novoCaminho[i];
-            }
+    Item aux;
+    Celula *p; // pointer to traverse the list
+    for(int i = 0; i < (dados)->numCidades; i++){
+        p = dados->cabeca[i]->prox; // point to the first element of the list
+        printf("Adjacencias do vertice %d: ", i);
+        while (p != NULL) { // while not at the end of the list
+            aux = *(p->item); // get the item
+            printf("(%d ,%d) -> ", aux.cidade, aux.distancia); // print it
+            p = p->prox; // move to the next element
         }
+        printf("NULL\n"); // print a newline after each list
+    }
+}
+
+int ListaTamanho(Grafo* gp, int index) {
+    return gp->cabeca[index]->tam;
+}
+
+// bool ListaInsereInicio(Grafo *gp, Item x, int pos){
+//     Celula *nova = malloc(sizeof(Celula));
+//     nova->item = malloc(sizeof(Item));
+//     if (nova == NULL) return false;
+//     *(nova->item) = x;
+//     nova->prox = gp->cabeca[pos]->prox; // make nova point to the first element of the list 
+//     gp->cabeca[pos]->prox = nova; // make cabeca point to nova 
+//     if (gp->ultimo[pos] == gp->cabeca[pos]) // if the list was empty, make ultimo point to nova as well
+//     gp->ultimo[pos] = nova;
+//     (*gp->cabeca[pos]).tam++;
+//     return true;
+//     }
+
+
+// void encontraCaminho(Grafo *dados, int *visitadas, int passos, int cidadeAtual)
+// {
+//     static int melhorDistancia = INT_MAX;
+//     int distanciaTemp;
+//     dados->novoCaminho[passos] = cidadeAtual;
+//     passos++;
+
+//     if (passos == dados->qtd_cidades)
+//     {   
+//         // Calcula a distancia total do caminho atual
+//         distanciaTemp = calculaCaminho(dados->qtd_cidades, *dados);
         
-    }
-    else
-    {   
-        // Atualiza a cidade atual como ja visitada
-        visitadas[cidadeAtual] = 1;
-        for (int proximaCidade = 0; proximaCidade < dados->qtd_cidades; proximaCidade++)
-        {
-            if (!visitadas[proximaCidade])
-            {   
-                // Recursivamente procura a proxima cidade
-                encontraCaminho(dados, visitadas, passos, proximaCidade);
-            }
-        }
-        // Atualiza novamente a cidade para nao visitada
-        visitadas[cidadeAtual] = 0;
-    }
+//         if (distanciaTemp < melhorDistancia)
+//         {
+//             melhorDistancia = distanciaTemp;
+//             dados->melhorPeso = melhorDistancia;
+
+//             //Armazena o melhor caminho encontrado ate o momento
+//             for (int i = 0; i < dados->qtd_cidades; i++)
+//             {
+//                 dados->melhorCaminho[i] = dados->novoCaminho[i];
+//             }
+//         }
+        
+//     }
+//     else
+//     {   
+//         // Atualiza a cidade atual como ja visitada
+//         visitadas[cidadeAtual] = 1;
+//         for (int proximaCidade = 0; proximaCidade < dados->qtd_cidades; proximaCidade++)
+//         {
+//             if (!visitadas[proximaCidade])
+//             {   
+//                 // Recursivamente procura a proxima cidade
+//                 encontraCaminho(dados, visitadas, passos, proximaCidade);
+//             }
+//         }
+//         // Atualiza novamente a cidade para nao visitada
+//         visitadas[cidadeAtual] = 0;
+//     }
 
     
-}
+// }
 
 
-int calculaCaminho(int qtd_cidades, Grafo dados)
-{
-    int total = 0;
+// int calculaCaminho(int qtd_cidades, Grafo dados)
+// {
+//     int total = 0;
 
-    // Calcula a distancia do caminho dado
-    for (int i = 0; i < qtd_cidades; i++)
-    {
-        if(dados.distancias[dados.novoCaminho[i]][dados.novoCaminho[i + 1]] == 0) 
-            return 1000; // Valor de retorno utilizado para esta condicao nao entrar na verificacao
+//     // Calcula a distancia do caminho dado
+//     for (int i = 0; i < qtd_cidades; i++)
+//     {
+//         if(dados.distancias[dados.novoCaminho[i]][dados.novoCaminho[i + 1]] == 0) 
+//             return 1000; // Valor de retorno utilizado para esta condicao nao entrar na verificacao
 
-        total += dados.distancias[dados.novoCaminho[i]][dados.novoCaminho[i + 1]];
-    }
-    return total;
-}
+//         total += dados.distancias[dados.novoCaminho[i]][dados.novoCaminho[i + 1]];
+//     }
+//     return total;
+// }
 
-void imprimeCaminho(Grafo *dados){
+// void imprimeCaminho(Grafo *dados){
 
-    dados->melhorCaminho[dados->qtd_cidades] = 0;
+//     dados->melhorCaminho[dados->qtd_cidades] = 0;
 
-    // Imprime o melhor caminho
-    for(int i = 0; i <= dados->qtd_cidades; i++){
-        printf("%d ", dados->melhorCaminho[i]);
-    }
+//     // Imprime o melhor caminho
+//     for(int i = 0; i <= dados->qtd_cidades; i++){
+//         printf("%d ", dados->melhorCaminho[i]);
+//     }
 
-    // Imprime a distancia do melhor caminho
-    printf("\n%d", dados->melhorPeso);
+//     // Imprime a distancia do melhor caminho
+//     printf("\n%d", dados->melhorPeso);
 
-}
+// }

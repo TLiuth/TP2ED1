@@ -3,19 +3,36 @@
 #define MAX_DIST 9999 // Valor maximo escolhido para distancias
 
 #include <stdio.h>
+#include <stdbool.h>
 
 typedef struct grafo Grafo;
 
+typedef struct celula Celula;
+
+typedef struct item Item;
+
+
 struct grafo
 {
-    int qtd_cidades;    // Armazena o numero de cidades do grafo
-    int **adj;          // Matriz de adjacencias
-    int *visitadas;     // Vetor com as cidades ja visitadas
-    int **distancias;   // Matriz que armazena as distancias entre as cidades
-    int *novoCaminho;   // Vetor para armazenar o novo caminho
-    int *melhorCaminho; // Vetor que armazena o melhor caminho entre as cidades
-    int melhorPeso;     // Armazena o peso do melhor caminho
+    Celula **cabeca;
+    Celula **ultimo;
+    int numCidades;
 };
+
+struct celula
+{
+    struct celula *prox;
+    Item *item;
+    int tam;
+};
+
+struct item
+{
+    int cidade;
+    int distancia;
+};
+
+
 
 Grafo *alocarGrafo(int); // Funcao para alocar a estrutura do grafo
 
@@ -26,6 +43,14 @@ void leGrafo(Grafo **); // Funcao para ler o grafo a partir da entrada padrao
 void encontraCaminho(Grafo *dados, int *visitadas, int passos, int cidadeAtual); // Funcao para encontrar o melhor caminho entre as cidades
 
 void imprimeCaminho(Grafo *dados); // Funcao que imprime o melhor caminho
+
+void imprimeGrafo(Grafo *dados);
+
+bool ListaGet(Grafo *gp, int pos, int p, Item *pX);
+
+int ListaTamanho(Grafo* gp, int index);
+
+void ListaDestroi(Celula** pLista);
 
 // Funcoes auxiliares
 

@@ -16,10 +16,12 @@ int main()
     leGrafo(&dados);
 
     // Inicia a busca pelo melhor caminho a partir da cidade 0
-    encontraCaminho(dados, dados->visitadas, 0, 0);
+    // encontraCaminho(dados, dados->visitadas, 0, 0);
 
     // Imprime o melhor caminho encontrado e sua distancia
-    imprimeCaminho(dados);
+    // imprimeCaminho(dados);
+
+    imprimeGrafo(dados);
 
     // Libera a memoria alocada
     desalocarGrafo(&dados);
