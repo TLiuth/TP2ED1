@@ -21,6 +21,8 @@ int main()
     // Imprime o melhor caminho encontrado e sua distancia
     // imprimeCaminho(dados);
 
+    ordenaGrafo(dados);
+
     imprimeGrafo(dados);
 
     // Libera a memoria alocada

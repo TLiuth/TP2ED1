@@ -56,4 +56,10 @@ void ListaDestroi(Celula** pLista);
 
 int calculaCaminho(int qtd_cidades, Grafo dados); // Funcao que calcula a distancia de cada caminho
 
+void ordenaLista(Celula** head);
+
+void ordenaGrafo(Grafo* dados);
+
+void troca(Celula* cel1, Celula* cel2);
+
 #endif

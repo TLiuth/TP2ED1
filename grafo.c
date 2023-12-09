@@ -114,6 +114,60 @@ int ListaTamanho(Grafo* gp, int index) {
     return gp->cabeca[index]->tam;
 }
 
+void ordenaGrafo(Grafo* dados){
+    for(int i = 0; i < dados->numCidades; i++){
+        ordenaLista(&(dados->cabeca[i]));
+    }
+}
+
+void ordenaLista(Celula** head) {
+    // Check if list is empty or contains only one element
+    if (*head == NULL || (*head)->prox == NULL) {
+        return;
+    }
+
+    Celula *aux = (*head)->prox, *aux1;
+
+    while (aux != NULL) {
+        aux1 = aux->prox;
+        while(aux1 != NULL){
+            if(aux->item->distancia > aux1->item->distancia){
+                troca(aux, aux1);
+            }
+            aux1 = aux1->prox;
+        }
+        aux = aux->prox;
+    }
+}
+
+// void ordenaLista(Celula** head) {
+//     // Check if list is empty or contains only one element
+//     if (*head == NULL || (*head)->prox == NULL) {
+//         return;
+//     }
+
+//     Celula *aux = *head, *aux1;
+
+//     while (aux != NULL) {
+//         aux1 = aux->prox;
+//         while(aux1 != NULL){
+//             if(aux->item->distancia > aux1->item->distancia){
+//                 troca(aux, aux1);
+//             }
+//             aux1 = aux1->prox;
+//         }
+
+//          aux = aux->prox;
+//     }
+// }
+
+void troca(Celula* cel1, Celula* cel2){
+    Item aux = (*cel1->item);
+    (*cel1->item) = (*cel2->item);
+    (*cel2->item) = aux;
+    
+}
+
 // bool ListaInsereInicio(Grafo *gp, Item x, int pos){
 //     Celula *nova = malloc(sizeof(Celula));
 //     nova->item = malloc(sizeof(Item));
