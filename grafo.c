@@ -6,20 +6,20 @@
 
 Grafo *alocarGrafo(int qtd_cidades)
 {
-    Grafo *gp = malloc(sizeof(Grafo)); //Aloca memória para a estrutura do grafo
+    Grafo *gp = malloc(sizeof(Grafo)); //Aloca memoria para a estrutura do grafo
     gp->numCidades = qtd_cidades;
 
     gp->cabeca = malloc(qtd_cidades * sizeof(Celula*)); //Aloca um vetor de ponteiros para listas encadeadas
-    gp->ultimo = malloc(qtd_cidades * sizeof(Celula*)); //Aloca um vetor de ponteiros para os últimos elementos das listas encadeadas
+    gp->ultimo = malloc(qtd_cidades * sizeof(Celula*)); //Aloca um vetor de ponteiros para os ultimos elementos das listas encadeadas
 
     for(int i = 0; i < qtd_cidades; i++){
-        gp->cabeca[i] = malloc(sizeof(Celula)); // aloca memória para uma única celula, que será a cabeça da lista propriamente dita
-        gp->ultimo[i] = gp->cabeca[i]; // o ponteiro de último aponta para o mesmo endereço que o ponteiro da cabeça (não há elementos na lista ainda)
+        gp->cabeca[i] = malloc(sizeof(Celula)); // aloca memoria para uma unica celula, que sera a cabeca da lista propriamente dita
+        gp->ultimo[i] = gp->cabeca[i]; // o ponteiro de ultimo aponta para o mesmo endereço que o ponteiro da cabeca (nao ha elementos na lista ainda)
         gp->cabeca[i]->tam = 0; // inicia o tamanho da lista como zero
-        gp->cabeca[i]->prox = NULL; // o próximo da celula cabeça é NULL
-        gp->cabeca[i]->item = NULL; // Não há itens
-        //O objetivo de inicializar a cabeça é armazenar o tamanho das listas
-        //As demais células terão o campo tam, mas esse não será utilzado
+        gp->cabeca[i]->prox = NULL; // o proximo da celula cabeca eh NULL
+        gp->cabeca[i]->item = NULL; // Nao ha itens
+        //O objetivo de inicializar a cabeca eh armazenar o tamanho das listas
+        //As demais celulas terao o campo tam, mas esse nao sera utilzado
     }
     
     return gp;
@@ -222,7 +222,7 @@ bool ListaGet(Grafo *gp, int pos, Item *pX, int destino) {
 }
 
 
-void imprimeGrafo(Grafo *dados)
+void imprimeOrdenado(Grafo *dados)
 {
     Item aux;
     Celula *p; // Ponteiro para percorrer a lista
@@ -318,7 +318,7 @@ void encontraCaminho(Grafo *dados, int *visitadas, int passos, int cidadeAtual, 
             melhorDistancia = distanciaTemp;
             *melhorPeso = melhorDistancia;
 
-            // Armazena o melhor caminho encontrado até o momento
+            // Armazena o melhor caminho encontrado ate o momento
             ListaCopia(caminhoTemp, melhorCaminho);
         }
         // Libera a memoria da lista temporaria
@@ -326,21 +326,21 @@ void encontraCaminho(Grafo *dados, int *visitadas, int passos, int cidadeAtual, 
     }
     else
     {   
-        // Atualiza a cidade atual como já visitada
+        // Atualiza a cidade atual como ja visitada
         visitadas[cidadeAtual] = 1;
         for (int proximaCidade = 0; proximaCidade < dados->numCidades; proximaCidade++)
         {
             if (!visitadas[proximaCidade])
             {   
-                // Recursivamente procura a próxima cidade
+                // Recursivamente procura a proxima cidade
                 encontraCaminho(dados, visitadas, passos, proximaCidade, novoCaminho, melhorPeso, melhorCaminho);
             }
         }
-        // Atualiza novamente a cidade para não visitada
+        // Atualiza novamente a cidade para nao visitada
         visitadas[cidadeAtual] = 0;
     }
 
-    // Remove a última cidade adicionada para manter o estado correto
+    // Remove a ultima cidade adicionada para manter o estado correto
     ListaRetiraFinal(novoCaminho);
 }
 

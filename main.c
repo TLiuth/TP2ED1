@@ -28,7 +28,7 @@ int main()
     ordenaGrafo(dados);
 
     // Imprime as adjacencias do grafo
-    imprimeGrafo(dados);
+    imprimeOrdenado(dados);
 
     // Inicia a busca pelo melhor caminho a partir da cidade 0
     encontraCaminho(dados, visitadas, 0, 0, novoCaminho, &melhorDistancia, melhorCaminho);

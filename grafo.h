@@ -39,7 +39,7 @@ struct item
 // Definicao da estrutura de um caminho como lista encadeada
 struct caminho 
 {
-    Celula *cabeca; // Ponteiro para a cekula cabeca da lista
+    Celula *cabeca; // Ponteiro para a celula cabeca da lista
     Celula *ultimo; // Ponteiro para o ultimo elemento da lista
 };
 
@@ -55,7 +55,7 @@ void encontraCaminho(Grafo *dados, int *visitadas, int passos, int cidadeAtual, 
 
 void imprimeCaminho(Caminho *caminho, int *melhorPeso); // Funcao que imprime o melhor caminho
 
-void imprimeGrafo(Grafo *dados); // Funcao que imprime as adjancencias do grafo
+void imprimeOrdenado(Grafo *dados); // Funcao que imprime as adjancencias do grafo
 
 int ListaTamanho(Grafo* gp, int index); // Funcao que retorna o tamanho de uma lista em uma posicao especifica no grafo
 
@@ -74,9 +74,6 @@ void ListaLimpa(Caminho *lista); // Funcao que limpa os elementos de uma lista
 void ListaCopia(Caminho *origem, Caminho *destino); // Funcao que copia os elementos de uma lista para outra
 
 bool ListaGet(Grafo *gp, int pos, Item *pX, int destino); // Funcao que obtem um item de uma lista em uma posicao especifica no grafo
-
-
-// Funcoes auxiliares
 
 Caminho* ListaCria(); // Funcao que cria uma lista Caminho vazia
 
