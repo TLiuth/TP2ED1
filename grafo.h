@@ -11,13 +11,9 @@ typedef struct celula Celula;
 
 typedef struct item Item;
 
-<<<<<<< Updated upstream
-
-=======
 typedef struct caminho Caminho;
 
 // Definicao da da estrutura do grafo
->>>>>>> Stashed changes
 struct grafo
 {
     Celula **cabeca; // Vetor de ponteiros para as cabecas das listas encadeadas
@@ -40,8 +36,6 @@ struct item
     int distancia;
 };
 
-<<<<<<< Updated upstream
-=======
 // Definicao da estrutura de um caminho como lista encadeada
 struct caminho 
 {
@@ -49,7 +43,6 @@ struct caminho
     Celula *ultimo; // Ponteiro para o ultimo elemento da lista
 };
 
->>>>>>> Stashed changes
 
 
 Grafo *alocarGrafo(int); // Funcao para alocar a estrutura do grafo
@@ -58,23 +51,8 @@ void desalocarGrafo(Grafo **); // Funcao para liberar a memoria alocada para o g
 
 void leGrafo(Grafo **); // Funcao para ler o grafo a partir da entrada padrao
 
-void encontraCaminho(Grafo *dados, int *visitadas, int passos, int cidadeAtual); // Funcao para encontrar o melhor caminho entre as cidades
+void encontraCaminho(Grafo *dados, int *visitadas, int passos, int cidadeAtual, Caminho *novoCaminho, int *melhorPeso, Caminho *melhorCaminho); // Funcao para encontrar o melhor caminho entre as cidades
 
-<<<<<<< Updated upstream
-void imprimeCaminho(Grafo *dados); // Funcao que imprime o melhor caminho
-
-void imprimeGrafo(Grafo *dados);
-
-bool ListaGet(Grafo *gp, int pos, int p, Item *pX);
-
-int ListaTamanho(Grafo* gp, int index);
-
-void ListaDestroi(Celula** pLista);
-
-// Funcoes auxiliares
-
-int calculaCaminho(int qtd_cidades, Grafo dados); // Funcao que calcula a distancia de cada caminho
-=======
 void imprimeCaminho(Caminho *caminho, int *melhorPeso); // Funcao que imprime o melhor caminho
 
 void imprimeGrafo(Grafo *dados); // Funcao que imprime as adjancencias do grafo
@@ -103,7 +81,6 @@ bool ListaGet(Grafo *gp, int pos, Item *pX, int destino); // Funcao que obtem um
 Caminho* ListaCria(); // Funcao que cria uma lista Caminho vazia
 
 int calculaCaminho(int qtd_cidades, Grafo *dados, Caminho *caminho); // Funcao que calcula a distancia de cada caminho
->>>>>>> Stashed changes
 
 void ordenaLista(Celula** head); // Funcao que ordena uma lista encadeada
 

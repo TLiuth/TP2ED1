@@ -1,13 +1,22 @@
 #include <stdio.h>
+#include <stdlib.h>
 #include "grafo.h"
 
 int main()
 {
     int qtd_cidades;
     Grafo *dados;
+    int *visitadas;
+    Caminho *novoCaminho, *melhorCaminho;
+    novoCaminho = ListaCria();
+    melhorCaminho = ListaCria();
+    int melhorDistancia;
+    
 
     // Le a quantidade de cidades
     scanf("%d", &qtd_cidades);
+
+    visitadas = (int *) malloc(qtd_cidades * sizeof(int));
 
     // Aloca a estrutura de dados do grafo
     dados = alocarGrafo(qtd_cidades);
@@ -15,24 +24,12 @@ int main()
     // Le os dados do grafo
     leGrafo(&dados);
 
-<<<<<<< Updated upstream
-    // Inicia a busca pelo melhor caminho a partir da cidade 0
-    // encontraCaminho(dados, dados->visitadas, 0, 0);
-
-    // Imprime o melhor caminho encontrado e sua distancia
-    // imprimeCaminho(dados);
-
-=======
     // Ordena as listas de adjacencias
->>>>>>> Stashed changes
     ordenaGrafo(dados);
 
     // Imprime as adjacencias do grafo
     imprimeGrafo(dados);
 
-<<<<<<< Updated upstream
-    // Libera a memoria alocada
-=======
     // Inicia a busca pelo melhor caminho a partir da cidade 0
     encontraCaminho(dados, visitadas, 0, 0, novoCaminho, &melhorDistancia, melhorCaminho);
 
@@ -44,7 +41,6 @@ int main()
     ListaDestroiCaminho(&melhorCaminho);
 
     // Libera a memoria alocada para o grafo
->>>>>>> Stashed changes
     desalocarGrafo(&dados);
 
     return 0;

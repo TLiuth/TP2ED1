@@ -25,8 +25,6 @@ Grafo *alocarGrafo(int qtd_cidades)
     return gp;
 }
 
-<<<<<<< Updated upstream
-=======
 void imprimeCaminho(Caminho* caminho, int *melhorPeso) {
     
     printf("Melhor caminho : ");
@@ -37,20 +35,6 @@ void imprimeCaminho(Caminho* caminho, int *melhorPeso) {
         aux = aux->prox; // Move para a proxima celula
     }
     printf("\nMelhor distancia : %d\n", *melhorPeso);
-
-}
-
-
-void imprimeCaminhoAtual(Caminho* caminho, int *melhorPeso) {
-    
-    printf("Caminho : ");
-    Celula* aux = caminho->cabeca->prox;
-    // Percorre a lista encadeada
-    while (aux != NULL) {
-        printf("%d ", aux->item->cidade);
-        aux = aux->prox; // Move para a proxima celula
-    }
-    printf("  Distância : %d\n", *melhorPeso);
 
 }
 
@@ -120,7 +104,6 @@ bool ListaInsereFinalCaminho(Caminho* pLista, int x) {
 }
 
 
->>>>>>> Stashed changes
 bool ListaInsereFinal(Grafo *gp, Item x, int pos) {
     // Aloca memoria para uma nova celula
     Celula* nova = malloc(sizeof(Celula));
@@ -142,8 +125,6 @@ bool ListaInsereFinal(Grafo *gp, Item x, int pos) {
     return true;
 }
 
-<<<<<<< Updated upstream
-=======
 void ListaLimpa(Caminho *lista) {
     Celula *aux = lista->cabeca->prox;  
 
@@ -173,7 +154,6 @@ void ListaCopia(Caminho *lista1, Caminho *lista2) {
     }
 }
 
->>>>>>> Stashed changes
 
 
 void desalocarGrafo(Grafo **dados)
@@ -205,6 +185,7 @@ void ListaDestroi(Celula** celula) {
     *celula = NULL;
 }
 
+
 void leGrafo(Grafo **dados)
 {
     int origem;
@@ -222,13 +203,6 @@ void leGrafo(Grafo **dados)
 }
 
 
-<<<<<<< Updated upstream
-bool ListaGet(Grafo *gp, int pos, int p, Item *pX) {
-    if (p >= ListaTamanho(gp, pos) || p < 0 )
-        return false;
-    Celula* aux = gp->cabeca[pos];
-    for (int i=0;i<p;i++)
-=======
 bool ListaGet(Grafo *gp, int pos, Item *pX, int destino) {
     if(ListaTamanho(gp,pos) == 0)
         return false;
@@ -238,8 +212,8 @@ bool ListaGet(Grafo *gp, int pos, Item *pX, int destino) {
 
     // Percorre a lista ate encontrar o destino desejado ou chegar ao final da lista
     while(aux->item->cidade != destino && aux != NULL){
->>>>>>> Stashed changes
         aux = aux->prox;
+    }    
     if (aux->item != NULL){
         (*pX) = *(aux->item); // Copia o conteudo do item para o ponteiro pX
     }
@@ -305,30 +279,6 @@ void ordenaLista(Celula** head) {
     }
 }
 
-<<<<<<< Updated upstream
-// void ordenaLista(Celula** head) {
-//     // Check if list is empty or contains only one element
-//     if (*head == NULL || (*head)->prox == NULL) {
-//         return;
-//     }
-
-//     Celula *aux = *head, *aux1;
-
-//     while (aux != NULL) {
-//         aux1 = aux->prox;
-//         while(aux1 != NULL){
-//             if(aux->item->distancia > aux1->item->distancia){
-//                 troca(aux, aux1);
-//             }
-//             aux1 = aux1->prox;
-//         }
-
-//          aux = aux->prox;
-//     }
-// }
-
-=======
->>>>>>> Stashed changes
 void troca(Celula* cel1, Celula* cel2){
     // Copia o conteudo da primeira celula para uma variavel auxiliar
     Item aux = (*cel1->item);
@@ -339,33 +289,13 @@ void troca(Celula* cel1, Celula* cel2){
     
 }
 
-// bool ListaInsereInicio(Grafo *gp, Item x, int pos){
-//     Celula *nova = malloc(sizeof(Celula));
-//     nova->item = malloc(sizeof(Item));
-//     if (nova == NULL) return false;
-//     *(nova->item) = x;
-//     nova->prox = gp->cabeca[pos]->prox; // make nova point to the first element of the list 
-//     gp->cabeca[pos]->prox = nova; // make cabeca point to nova 
-//     if (gp->ultimo[pos] == gp->cabeca[pos]) // if the list was empty, make ultimo point to nova as well
-//     gp->ultimo[pos] = nova;
-//     (*gp->cabeca[pos]).tam++;
-//     return true;
-//     }
 
+void encontraCaminho(Grafo *dados, int *visitadas, int passos, int cidadeAtual, Caminho *novoCaminho, int *melhorPeso, Caminho *melhorCaminho)
+{
 
-// void encontraCaminho(Grafo *dados, int *visitadas, int passos, int cidadeAtual)
-// {
-//     static int melhorDistancia = INT_MAX;
-//     int distanciaTemp;
-//     dados->novoCaminho[passos] = cidadeAtual;
-//     passos++;
+    static int melhorDistancia = INT_MAX;
+    int distanciaTemp;
 
-<<<<<<< Updated upstream
-//     if (passos == dados->qtd_cidades)
-//     {   
-//         // Calcula a distancia total do caminho atual
-//         distanciaTemp = calculaCaminho(dados->qtd_cidades, *dados);
-=======
     // Adiciona a cidade atual ao novoCaminho
     ListaInsereFinalCaminho(novoCaminho, cidadeAtual);
     
@@ -382,23 +312,12 @@ void troca(Celula* cel1, Celula* cel2){
 
         // Calcula a distancia total do caminho atual
         distanciaTemp = calculaCaminho(dados->numCidades, dados, caminhoTemp);
-
-        //imprimeCaminhoAtual(caminhoTemp, &distanciaTemp);
->>>>>>> Stashed changes
         
-//         if (distanciaTemp < melhorDistancia)
-//         {
-//             melhorDistancia = distanciaTemp;
-//             dados->melhorPeso = melhorDistancia;
+        if (distanciaTemp < melhorDistancia)
+        {
+            melhorDistancia = distanciaTemp;
+            *melhorPeso = melhorDistancia;
 
-<<<<<<< Updated upstream
-//             //Armazena o melhor caminho encontrado ate o momento
-//             for (int i = 0; i < dados->qtd_cidades; i++)
-//             {
-//                 dados->melhorCaminho[i] = dados->novoCaminho[i];
-//             }
-//         }
-=======
             // Armazena o melhor caminho encontrado até o momento
             ListaCopia(caminhoTemp, melhorCaminho);
         }
@@ -451,54 +370,11 @@ int calculaCaminho(int qtd_cidades, Grafo *dados, Caminho *caminho)
     //Calcula a distancia do caminho dado
     for (int i = 0; i < qtd_cidades; i++)
     {
->>>>>>> Stashed changes
         
-//     }
-//     else
-//     {   
-//         // Atualiza a cidade atual como ja visitada
-//         visitadas[cidadeAtual] = 1;
-//         for (int proximaCidade = 0; proximaCidade < dados->qtd_cidades; proximaCidade++)
-//         {
-//             if (!visitadas[proximaCidade])
-//             {   
-//                 // Recursivamente procura a proxima cidade
-//                 encontraCaminho(dados, visitadas, passos, proximaCidade);
-//             }
-//         }
-//         // Atualiza novamente a cidade para nao visitada
-//         visitadas[cidadeAtual] = 0;
-//     }
+        if(distancias[i].distancia == 0) 
+            return 1000; //Valor de retorno utilizado para esta condicao nao entrar na verificacao
 
-    
-// }
-
-
-// int calculaCaminho(int qtd_cidades, Grafo dados)
-// {
-//     int total = 0;
-
-//     // Calcula a distancia do caminho dado
-//     for (int i = 0; i < qtd_cidades; i++)
-//     {
-//         if(dados.distancias[dados.novoCaminho[i]][dados.novoCaminho[i + 1]] == 0) 
-//             return 1000; // Valor de retorno utilizado para esta condicao nao entrar na verificacao
-
-//         total += dados.distancias[dados.novoCaminho[i]][dados.novoCaminho[i + 1]];
-//     }
-//     return total;
-// }
-
-// void imprimeCaminho(Grafo *dados){
-
-//     dados->melhorCaminho[dados->qtd_cidades] = 0;
-
-//     // Imprime o melhor caminho
-//     for(int i = 0; i <= dados->qtd_cidades; i++){
-//         printf("%d ", dados->melhorCaminho[i]);
-//     }
-
-//     // Imprime a distancia do melhor caminho
-//     printf("\n%d", dados->melhorPeso);
-
-// }
+        total += distancias[i].distancia;
+    }
+    return total;
+}
