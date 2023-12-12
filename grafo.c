@@ -6,10 +6,12 @@
 
 Grafo *alocarGrafo(int qtd_cidades)
 {
-    Grafo *gp = malloc(sizeof(Grafo));
+    Grafo *gp = malloc(sizeof(Grafo)); //Aloca memória para a estrutura do grafo
     gp->numCidades = qtd_cidades;
+
     gp->cabeca = malloc(qtd_cidades * sizeof(Celula*)); //Aloca um vetor de ponteiros para listas encadeadas
     gp->ultimo = malloc(qtd_cidades * sizeof(Celula*)); //Aloca um vetor de ponteiros para os últimos elementos das listas encadeadas
+
     for(int i = 0; i < qtd_cidades; i++){
         gp->cabeca[i] = malloc(sizeof(Celula)); // aloca memória para uma única celula, que será a cabeça da lista propriamente dita
         gp->ultimo[i] = gp->cabeca[i]; // o ponteiro de último aponta para o mesmo endereço que o ponteiro da cabeça (não há elementos na lista ainda)
@@ -23,45 +25,182 @@ Grafo *alocarGrafo(int qtd_cidades)
     return gp;
 }
 
-bool ListaInsereFinal(Grafo *gp, Item x, int pos) {
-    Celula* nova = malloc(sizeof(Celula));
-    nova->item = malloc(sizeof(Item)); 
+<<<<<<< Updated upstream
+=======
+void imprimeCaminho(Caminho* caminho, int *melhorPeso) {
+    
+    printf("Melhor caminho : ");
+    Celula* aux = caminho->cabeca->prox;
+    // Percorre a lista encadeada
+    while (aux != NULL) {
+        printf("%d ", aux->item->cidade);
+        aux = aux->prox; // Move para a proxima celula
+    }
+    printf("\nMelhor distancia : %d\n", *melhorPeso);
+
+}
+
+
+void imprimeCaminhoAtual(Caminho* caminho, int *melhorPeso) {
+    
+    printf("Caminho : ");
+    Celula* aux = caminho->cabeca->prox;
+    // Percorre a lista encadeada
+    while (aux != NULL) {
+        printf("%d ", aux->item->cidade);
+        aux = aux->prox; // Move para a proxima celula
+    }
+    printf("  Distância : %d\n", *melhorPeso);
+
+}
+
+bool ListaEhVazia(Caminho* caminho) {
+    return caminho->cabeca == caminho->ultimo; // Verifica se a cabeca aponta para o ultimo
+}
+
+void ListaDestroiCaminho(Caminho** caminho) {
+    Celula* aux = (*caminho)->cabeca, *aux1;
+    // Percorre a lista encadeada
+    while (aux != NULL) {
+        aux1 = aux->prox;
+        free(aux); // Libera a memoria para a celula atual
+        aux = aux1; // Move para a proxima celula
+    }
+    free(*caminho); // Libera a memoria para alocada para a estrutura 
+    *caminho = NULL;
+}
+
+
+Caminho* ListaCria() {
+    // Aloca memoria para a estrutura
+    Caminho* lista = (Caminho*) malloc(1 * sizeof(Caminho));
+
+    // Aloca memoria para a celula cabeca da lista
+    lista->cabeca = (Celula*) malloc(1 * sizeof(Celula));
+
+    lista->cabeca->prox = NULL;
+    lista->ultimo = lista->cabeca;
+    return lista;
+}
+
+bool ListaRetiraFinal(Caminho* pLista) {
+    // Verifica se a lista esta vazia
+    if (ListaEhVazia(pLista))
+        return false;
+
+    Celula* aux = pLista->cabeca;
+    
+    // Percorre a lista ate encontrar o ultimo elemento
+    while (aux->prox != pLista->ultimo)
+        aux = aux->prox;
+    pLista->ultimo = aux; // Atualiza o 'ultimo' para o penultimo elemento
+    free(aux->prox); // Libera a memoria alocada para o ultimo elemento
+    aux->prox = NULL; // Define o ponteiro 'prox' do penultimo elemento como NULL, representando o final
+    return true;
+}
+
+bool ListaInsereFinalCaminho(Caminho* pLista, int x) {
+    // Aloca memoria para uma nova celula
+    Celula* nova = (Celula*) malloc(sizeof(Celula));
+
     if (nova == NULL)
         return false;
-    *(nova->item) = x;
-    nova->prox = NULL;
-    if (gp->ultimo[pos] != NULL)
-        gp->ultimo[pos]->prox = nova;
-    else
-        gp->cabeca[pos] = nova;
-    gp->ultimo[pos] = nova;
-    (*gp->cabeca[pos]).tam++;
+    
+    nova->item = (Item*)malloc(sizeof(Item));  // Aloca memória para o novo item
+    
+    if (nova->item == NULL) {
+        free(nova);  // Libera a célula se a alocação falhar
+        return false;
+    }
+    nova->item->cidade = x; // Define o valor da cidade como o novo item
+    nova->prox = NULL; // Configura o ponteiro 'prox' da nova celula como NULL, pois ela é a ultima na lista
+    pLista->ultimo->prox = nova; // Atualiza o ponteiro 'prox' do antigo ultimo elemento
+    pLista->ultimo = nova; // Atualiza o ponteiro 'ultimo' para a nova celula
     return true;
 }
 
 
+>>>>>>> Stashed changes
+bool ListaInsereFinal(Grafo *gp, Item x, int pos) {
+    // Aloca memoria para uma nova celula
+    Celula* nova = malloc(sizeof(Celula));
+
+    nova->item = malloc(sizeof(Item)); // Aloca memoria para o novo item
+    
+    if (nova == NULL)
+        return false;    
+    
+    *(nova->item) = x; // Define o valor do item como o novo item
+    nova->prox = NULL; // Define o ponteiro 'prox' da nova celula como NULL, indicando o final
+
+    
+    gp->ultimo[pos]->prox = nova; // Atualiza o ponteiro 'prox' do ultimo para apontar para a nova celula
+    gp->ultimo[pos] = nova; // Atualiza o ponteiro 'ultimo' para a nova celula
+
+    (*gp->cabeca[pos]).tam++;
+
+    return true;
+}
+
+<<<<<<< Updated upstream
+=======
+void ListaLimpa(Caminho *lista) {
+    Celula *aux = lista->cabeca->prox;  
+
+    while (aux != NULL) {
+        Celula *prox = aux->prox;  // Salva o próximo ponteiro antes de liberar a célula atual
+        free(aux);  // Libera a célula atual
+        aux = prox;  // Move para a próxima célula
+    }
+
+    // Atualiza o ponteiro de cabeça da lista para NULL e o último aponta para a cabeca, indicando uma lista vazia
+    lista->cabeca->prox = NULL;
+    lista->ultimo = lista->cabeca;
+}
+
+
+void ListaCopia(Caminho *lista1, Caminho *lista2) {
+    Celula *aux = lista1->cabeca->prox; 
+
+    // Limpa a lista de destino antes de copiar
+    ListaLimpa(lista2);
+
+    // Percorre a lista encadeada
+    while (aux != NULL) {
+        // Para cada elemento na lista original, insere no final da lista de destino
+        ListaInsereFinalCaminho(lista2, aux->item->cidade);
+        aux = aux->prox;
+    }
+}
+
+>>>>>>> Stashed changes
+
 
 void desalocarGrafo(Grafo **dados)
 {
+    // Percorre todas as listas encadeadas no grafo e as desaloca
     for(int i = 0; i < (*dados)->numCidades; i++){
             ListaDestroi(&((*dados)->cabeca[i]));;
     }
-    free((*dados)->cabeca);
-    free((*dados)->ultimo);
-    free(*dados);
+    free((*dados)->cabeca); // Libera a memoria alocada para o vetor de ponteiros para a 'cabeca'
+    free((*dados)->ultimo); // Libera a memoria alocada para o vetor de ponteiros para o 'ultimo'
+    free(*dados); // Libera a memoria alocada para o grafo
     *dados = NULL;
 
 }
 
 void ListaDestroi(Celula** celula) {
-    Celula* aux = *celula, *aux1;
+    Celula* aux = *celula;
+    Celula *aux1;
+
+    // Percorre a lista encadeada
     while (aux != NULL) {
         aux1 = aux->prox;
         if (aux->item != NULL) {
-            free(aux->item);
+            free(aux->item); // Libera a memoria para o item se ele nao for nulo
         }
-        free(aux);
-        aux = aux1;
+        free(aux); // Libera a memoria para a celula atual
+        aux = aux1; // Move para a proxima celula
     }
     *celula = NULL;
 }
@@ -70,24 +209,39 @@ void leGrafo(Grafo **dados)
 {
     int origem;
     Item aux;
+
+    // Loop para percorrer as cidades de origem
     for(int i = 0; i < (*dados)->numCidades; i++){
+        // Loop para percorrer as cidades de destino
         for(int j = 0; j < (*dados)->numCidades; j++){
             scanf("%d%d%d", &origem, &aux.cidade, &aux.distancia);
-            ListaInsereFinal(*dados, aux, origem);
+            ListaInsereFinal(*dados, aux, origem); // Insere as informações nas listas
             
         }
     }
 }
 
 
+<<<<<<< Updated upstream
 bool ListaGet(Grafo *gp, int pos, int p, Item *pX) {
     if (p >= ListaTamanho(gp, pos) || p < 0 )
         return false;
     Celula* aux = gp->cabeca[pos];
     for (int i=0;i<p;i++)
+=======
+bool ListaGet(Grafo *gp, int pos, Item *pX, int destino) {
+    if(ListaTamanho(gp,pos) == 0)
+        return false;
+    
+    // Inicializa um ponteiro auxiliar para o inicio da lista
+    Celula* aux = gp->cabeca[pos]->prox;
+
+    // Percorre a lista ate encontrar o destino desejado ou chegar ao final da lista
+    while(aux->item->cidade != destino && aux != NULL){
+>>>>>>> Stashed changes
         aux = aux->prox;
     if (aux->item != NULL){
-        (*pX) = *(aux->item);
+        (*pX) = *(aux->item); // Copia o conteudo do item para o ponteiro pX
     }
     
     return true;
@@ -97,16 +251,17 @@ bool ListaGet(Grafo *gp, int pos, int p, Item *pX) {
 void imprimeGrafo(Grafo *dados)
 {
     Item aux;
-    Celula *p; // pointer to traverse the list
+    Celula *p; // Ponteiro para percorrer a lista
     for(int i = 0; i < (dados)->numCidades; i++){
-        p = dados->cabeca[i]->prox; // point to the first element of the list
+        p = dados->cabeca[i]->prox; // Aponta para o primeiro elemento da lista correspondente
         printf("Adjacencias do vertice %d: ", i);
-        while (p != NULL) { // while not at the end of the list
-            aux = *(p->item); // get the item
-            printf("(%d ,%d) -> ", aux.cidade, aux.distancia); // print it
-            p = p->prox; // move to the next element
+        // Percorre a lista ate o final
+        while (p != NULL) { 
+            aux = *(p->item); // Obtem o item
+            printf("(%d ,%d) -> ", aux.cidade, aux.distancia);
+            p = p->prox; // Move para a proxima celula
         }
-        printf("NULL\n"); // print a newline after each list
+        printf("NULL\n"); 
     }
 }
 
@@ -115,24 +270,34 @@ int ListaTamanho(Grafo* gp, int index) {
 }
 
 void ordenaGrafo(Grafo* dados){
+    // Percorre todas as cidades no grafo
     for(int i = 0; i < dados->numCidades; i++){
+        // Chama a funcao para ordenar a respectiva lista
         ordenaLista(&(dados->cabeca[i]));
     }
 }
 
 void ordenaLista(Celula** head) {
-    // Check if list is empty or contains only one element
+    // Verifica se a lista esta vazia ou se possui so um elemento
     if (*head == NULL || (*head)->prox == NULL) {
         return;
     }
 
-    Celula *aux = (*head)->prox, *aux1;
+    Celula *aux = (*head)->prox; // Inicializa um ponteiro auxiliar para o inicio da lista
+    Celula *aux1;
 
+    // Percorre a lista utilizando o algoritmo de ordenacao 'BubbleSort'
     while (aux != NULL) {
-        aux1 = aux->prox;
+        aux1 = aux->prox;  
         while(aux1 != NULL){
+            // Compara as distancias entre os elementos
             if(aux->item->distancia > aux1->item->distancia){
-                troca(aux, aux1);
+                troca(aux, aux1); // Troca se necessario
+            }else if(aux->item->distancia == aux1->item->distancia){
+                // Se as distancias forem iguais, compara as cidades
+                if(aux->item->cidade > aux1->item->cidade){
+                troca(aux, aux1); // Troca se necessario
+                }
             }
             aux1 = aux1->prox;
         }
@@ -140,6 +305,7 @@ void ordenaLista(Celula** head) {
     }
 }
 
+<<<<<<< Updated upstream
 // void ordenaLista(Celula** head) {
 //     // Check if list is empty or contains only one element
 //     if (*head == NULL || (*head)->prox == NULL) {
@@ -161,9 +327,14 @@ void ordenaLista(Celula** head) {
 //     }
 // }
 
+=======
+>>>>>>> Stashed changes
 void troca(Celula* cel1, Celula* cel2){
+    // Copia o conteudo da primeira celula para uma variavel auxiliar
     Item aux = (*cel1->item);
+    // Copia o conteudo da segunda celula para a primeira
     (*cel1->item) = (*cel2->item);
+    // Copia o conteudo da variavel auxiliar para segunda celula
     (*cel2->item) = aux;
     
 }
@@ -189,22 +360,98 @@ void troca(Celula* cel1, Celula* cel2){
 //     dados->novoCaminho[passos] = cidadeAtual;
 //     passos++;
 
+<<<<<<< Updated upstream
 //     if (passos == dados->qtd_cidades)
 //     {   
 //         // Calcula a distancia total do caminho atual
 //         distanciaTemp = calculaCaminho(dados->qtd_cidades, *dados);
+=======
+    // Adiciona a cidade atual ao novoCaminho
+    ListaInsereFinalCaminho(novoCaminho, cidadeAtual);
+    
+
+    passos++;
+
+    if (passos == dados->numCidades)
+    {   
+        // Cria uma lista Caminho temporaria
+        Caminho *caminhoTemp; 
+        caminhoTemp = ListaCria();
+        // Copia a lista 'novoCaminho' para essa temporaria
+        ListaCopia(novoCaminho, caminhoTemp);
+
+        // Calcula a distancia total do caminho atual
+        distanciaTemp = calculaCaminho(dados->numCidades, dados, caminhoTemp);
+
+        //imprimeCaminhoAtual(caminhoTemp, &distanciaTemp);
+>>>>>>> Stashed changes
         
 //         if (distanciaTemp < melhorDistancia)
 //         {
 //             melhorDistancia = distanciaTemp;
 //             dados->melhorPeso = melhorDistancia;
 
+<<<<<<< Updated upstream
 //             //Armazena o melhor caminho encontrado ate o momento
 //             for (int i = 0; i < dados->qtd_cidades; i++)
 //             {
 //                 dados->melhorCaminho[i] = dados->novoCaminho[i];
 //             }
 //         }
+=======
+            // Armazena o melhor caminho encontrado até o momento
+            ListaCopia(caminhoTemp, melhorCaminho);
+        }
+        // Libera a memoria da lista temporaria
+        ListaDestroiCaminho(&caminhoTemp);
+    }
+    else
+    {   
+        // Atualiza a cidade atual como já visitada
+        visitadas[cidadeAtual] = 1;
+        for (int proximaCidade = 0; proximaCidade < dados->numCidades; proximaCidade++)
+        {
+            if (!visitadas[proximaCidade])
+            {   
+                // Recursivamente procura a próxima cidade
+                encontraCaminho(dados, visitadas, passos, proximaCidade, novoCaminho, melhorPeso, melhorCaminho);
+            }
+        }
+        // Atualiza novamente a cidade para não visitada
+        visitadas[cidadeAtual] = 0;
+    }
+
+    // Remove a última cidade adicionada para manter o estado correto
+    ListaRetiraFinal(novoCaminho);
+}
+
+
+
+int calculaCaminho(int qtd_cidades, Grafo *dados, Caminho *caminho)
+{
+    ListaInsereFinalCaminho(caminho, 0);
+    Item distancias[qtd_cidades];
+    int total = 0;
+    int origem;
+    int destino;
+    int i = 0;
+    
+    Celula *aux = caminho->cabeca->prox;
+    
+    // Itera pelas listas de adjacencias correspondentes e armazena as distancias num vetor de Itens
+    while (aux != NULL && aux->prox != NULL) {
+        origem = aux->item->cidade;
+        destino = aux->prox->item->cidade;
+        ListaGet(dados, origem, &distancias[i], destino); // Obtem a distancia correspondente de uma cidade a outra e armazena no vetor
+        aux = aux->prox; // Move para a proxima celula
+        i++;
+    }
+    
+
+    //Calcula a distancia do caminho dado
+    for (int i = 0; i < qtd_cidades; i++)
+    {
+>>>>>>> Stashed changes
         
 //     }
 //     else
